@@ -1,0 +1,28 @@
+ASLAN TUNER v1.0.0
+
+Release package prepared for low-end Windows systems.
+
+Performance work:
+- Calculator and Engine Dyno imports are lazy-loaded.
+- Heavy third-party scientific stacks are not used by the current source.
+- PyInstaller spec avoids collect_all(PySide6) and packages only required assets.
+- No generated __pycache__, build, dist, or old installer binaries are included.
+- Optional ASLAN_PROFILE=1 startup timing is available for local Windows testing.
+
+Release workflow:
+1. Extract this folder.
+2. Install Python 3.10+ if needed.
+3. Optional: keep/create .venv in the project folder.
+4. Double-click RELEASE.bat.
+5. RELEASE.bat installs/checks dependencies, builds the EXE, detects Inno Setup 6,
+   generates a versioned installer script, and builds the final Setup.
+
+Versioning:
+- Change only version.txt, e.g. 1.1.0.
+- Run RELEASE.bat.
+- EXE and Installer names follow that version automatically.
+
+Important:
+- The development environment used to prepare this package is not Windows, so
+  Windows EXE/Installer execution cannot be truthfully marked as tested here.
+- RELEASE.bat is designed to perform the final Windows build and pauses on errors.
