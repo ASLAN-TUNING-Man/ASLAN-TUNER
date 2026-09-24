@@ -8,7 +8,7 @@ from PySide6.QtGui import (
     QLinearGradient,
     QRadialGradient,
 )
-from PySide6.QtWidgets import QFrame, QPushButton
+from PySide6.QtWidgets import QFrame, QPushButton, QDialog, QVBoxLayout, QLabel, QHBoxLayout, QMessageBox
 
 APP_RED = "#e40018"
 
@@ -17,7 +17,8 @@ class ASLANTopBar(QFrame):
     """ASLAN TUNING custom title bar drawn entirely with QPainter."""
 
     maximize_requested = Signal()
-    BAR_HEIGHT = 56
+    logout_requested = Signal()
+    BAR_HEIGHT = 50
 
     def __init__(self, parent, title=""):
         super().__init__(parent)
@@ -25,6 +26,12 @@ class ASLANTopBar(QFrame):
         self._title = title
         self._dragging = False
         self._drag_position = None
+
+        self.profile_btn = self._make_button("", "ProfileButton")
+        self.profile_btn.setFixedSize(172, self.BAR_HEIGHT - 8)
+        self.profile_btn.setText(self._profile_label())
+        self.profile_btn.setToolTip("Open your ASLAN TUNER profile")
+        self.profile_btn.clicked.connect(self._show_profile)
 
         self.setFixedHeight(self.BAR_HEIGHT)
         self.setObjectName("ASLANTopBar")
@@ -57,11 +64,42 @@ class ASLANTopBar(QFrame):
                 background: rgba(255,255,255,0.055);
                 color: white;
             }
+            QPushButton#ProfileButton {
+                background: rgba(18, 21, 26, 0.92);
+                border: 1px solid #3b4048;
+                border-radius: 10px;
+                color: #f2f3f5;
+                padding: 0 14px;
+                font-size: 14px;
+                font-weight: 800;
+                text-align: left;
+            }
+            QPushButton#ProfileButton:hover {
+                background: rgba(42, 19, 24, 0.96);
+                border-color: #e90018;
+                color: white;
+            }
+            QPushButton#ProfileButton:pressed {
+                background: #3a0e15;
+            }
             QPushButton#CloseButton:hover {
                 background: #c90012;
             }
         """)
         self._position_buttons()
+
+    def _profile_label(self):
+        username = ""
+        try:
+            from PySide6.QtCore import QSettings
+            username = str(QSettings("ASLAN", "ASLAN_TUNER").value("account/username", "")).strip()
+        except Exception:
+            pass
+        if username:
+            if len(username) > 14:
+                username = username[:13] + "…"
+            return f"◉  {username}"
+        return "◉  PROFILE"
 
     def _make_button(self, text, name):
         button = QPushButton(text, self)
@@ -77,6 +115,7 @@ class ASLANTopBar(QFrame):
 
     def _position_buttons(self):
         w = self.width()
+        self.profile_btn.move(10, 4)
         self.min_btn.move(w - 132, 0)
         self.max_btn.move(w - 90, 0)
         self.close_btn.move(w - 48, 0)
@@ -89,129 +128,120 @@ class ASLANTopBar(QFrame):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         p.setRenderHint(QPainter.RenderHint.TextAntialiasing, True)
+        w, h = self.width(), self.height()
+        red = QColor("#ef1730")
+        red_dim = QColor("#7e0b18")
 
-        w = self.width()
-        h = self.height()
-        red = QColor("#e90018")
-        red2 = QColor("#ff172b")
-        dark_red = QColor("#74000d")
-
-        # Dark metallic background instead of a flat black rectangle.
         bg = QLinearGradient(0, 0, 0, h)
-        bg.setColorAt(0.00, QColor("#12151a"))
-        bg.setColorAt(0.22, QColor("#0d1014"))
-        bg.setColorAt(0.72, QColor("#090b0e"))
-        bg.setColorAt(1.00, QColor("#07080a"))
+        bg.setColorAt(0.0, QColor("#15181d"))
+        bg.setColorAt(0.45, QColor("#0e1115"))
+        bg.setColorAt(1.0, QColor("#090b0e"))
         p.fillRect(self.rect(), bg)
 
-        # Soft red glow behind the center upper edge.
-        glow = QRadialGradient(QPointF(w * .50, 0), 190)
-        glow.setColorAt(0.00, QColor(255, 0, 25, 115))
-        glow.setColorAt(0.22, QColor(230, 0, 20, 42))
-        glow.setColorAt(1.00, QColor(0, 0, 0, 0))
-        p.fillRect(QRectF(w * .34, 0, w * .32, 12), glow)
+        # Subtle red center glow and a thin motorsport-style accent line.
+        glow = QRadialGradient(QPointF(w * 0.5, 0), max(80, w * 0.22))
+        glow.setColorAt(0.0, QColor(239, 23, 48, 75))
+        glow.setColorAt(1.0, QColor(239, 23, 48, 0))
+        p.fillRect(QRectF(w * .25, 0, w * .50, h), glow)
 
-        # Thin metallic outer frame.
-        p.setPen(QPen(QColor("#363a40"), 1))
-        p.drawLine(2, 1, w - 3, 1)
-        p.drawLine(2, 2, 2, h - 1)
-        p.drawLine(w - 3, 2, w - 3, h - 1)
-        p.setPen(QPen(QColor("#202328"), 1))
-        p.drawLine(3, h - 2, w - 4, h - 2)
+        p.setPen(QPen(QColor("#2c3138"), 1))
+        p.drawLine(0, h - 1, w, h - 1)
+        p.setPen(QPen(red, 2))
+        p.drawLine(12, 3, min(230, int(w * .20)), 3)
+        p.drawLine(max(0, w - 230), 3, w - 12, 3)
 
-        # Main red geometry. Coordinates are based on the reference and
-        # scale around the center so it stays correct on different widths.
+        # Small center chevron; keeps the tuning aesthetic without a giant logo.
         cx = w / 2
-        y = 29
-
-        # Left horizontal rail and its angular break.
-        p.setPen(QPen(red, 2))
         path = QPainterPath()
-        path.moveTo(27, y)
-        path.lineTo(cx - 194, y)
-        path.lineTo(cx - 151, y)
-        path.lineTo(cx - 112, h - 1)
-        path.lineTo(cx - 79, h - 1)
+        path.moveTo(cx - 78, 3)
+        path.lineTo(cx - 60, h - 5)
+        path.lineTo(cx + 60, h - 5)
+        path.lineTo(cx + 78, 3)
+        p.setPen(QPen(red_dim, 1))
         p.drawPath(path)
 
-        # Left upper dark-red diagonal, like the recessed panel in image.
-        p.setPen(QPen(dark_red, 1.2))
-        path = QPainterPath()
-        path.moveTo(cx - 194, y)
-        path.lineTo(cx - 151, 4)
-        path.lineTo(cx - 98, 4)
-        p.drawPath(path)
-
-        # Right mirror geometry, stopping before the controls.
-        p.setPen(QPen(red, 2))
-        path = QPainterPath()
-        path.moveTo(cx + 79, h - 1)
-        path.lineTo(cx + 112, h - 1)
-        path.lineTo(cx + 151, y)
-        path.lineTo(cx + 194, y)
-        path.lineTo(w - 226, y)
-        p.drawPath(path)
-
-        p.setPen(QPen(dark_red, 1.2))
-        path = QPainterPath()
-        path.moveTo(cx + 194, y)
-        path.lineTo(cx + 151, 4)
-        path.lineTo(cx + 98, 4)
-        p.drawPath(path)
-
-        # Long outer rails toward the controls.
-        p.setPen(QPen(red, 2))
-        p.drawLine(w - 226, y, w - 184, y)
-        p.drawLine(w - 184, y, w - 161, y + 18)
-        p.drawLine(w - 161, y + 18, w - 84, y + 18)
-
-        # Center bottom chevron / shield point.
-        path = QPainterPath()
-        path.moveTo(cx - 79, h - 1)
-        path.lineTo(cx - 20, h - 1)
-        path.lineTo(cx, h + 10)
-        path.lineTo(cx + 20, h - 1)
-        path.lineTo(cx + 79, h - 1)
-        p.setPen(QPen(red, 2))
-        p.drawPath(path)
-
-        # Thin echo line under the center point.
-        p.setPen(QPen(QColor("#8f0010"), 1))
-        path = QPainterPath()
-        path.moveTo(cx - 21, h - 1)
-        path.lineTo(cx, h + 8)
-        path.lineTo(cx + 21, h - 1)
-        p.drawPath(path)
-
-        # Fine red highlight along the very top center.
-        top = QLinearGradient(cx - 100, 0, cx + 100, 0)
-        top.setColorAt(0.0, QColor(0, 0, 0, 0))
-        top.setColorAt(0.34, QColor(255, 0, 20, 70))
-        top.setColorAt(0.50, QColor(255, 35, 55, 210))
-        top.setColorAt(0.66, QColor(255, 0, 20, 70))
-        top.setColorAt(1.0, QColor(0, 0, 0, 0))
-        p.setPen(QPen(top, 2))
-        p.drawLine(int(cx - 100), 1, int(cx + 100), 1)
-
-        # Left brand.
-        brand_font = QFont("DejaVu Sans", 12)
-        brand_font.setBold(True)
-        brand_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 0.7)
-        p.setFont(brand_font)
-        p.setPen(red2)
-
-        # Center title: real text, no image. A wide bold font + spacing gives
-        # the same compact/futuristic treatment as the reference.
-        title_font = QFont("DejaVu Sans", 17)
+        title_font = QFont("Segoe UI", 12)
         title_font.setBold(True)
-        title_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 1.0)
+        title_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 1.2)
         p.setFont(title_font)
-        p.setPen(red2)
-        p.drawText(QRectF(cx - 230, 3, 460, 42),
+        p.setPen(QColor("#ff4054"))
+        p.drawText(QRectF(cx - 190, 0, 380, h),
                    Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
-                   self._title)
-
+                   self._title.upper())
         p.end()
+
+    def _show_profile(self):
+        dialog = QDialog(self.parent_window)
+        dialog.setWindowTitle("ASLAN TUNER • Profile")
+        dialog.setModal(True)
+        dialog.setMinimumSize(430, 300)
+        dialog.resize(470, 340)
+
+        try:
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ASLAN", "ASLAN_TUNER")
+            username = str(settings.value("account/username", "")).strip() or "Local User"
+        except Exception:
+            username = "Local User"
+
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(28, 26, 28, 24)
+        layout.setSpacing(12)
+
+        eyebrow = QLabel("ACCOUNT CENTER")
+        eyebrow.setStyleSheet("color:#ff3045;font-size:11px;font-weight:900;letter-spacing:1px;")
+        layout.addWidget(eyebrow)
+
+        title = QLabel(username)
+        title.setStyleSheet("color:#f4f5f7;font-size:25px;font-weight:900;")
+        layout.addWidget(title)
+
+        status = QLabel("●  Signed in  •  Local ASLAN TUNER account")
+        status.setStyleSheet("color:#73e69a;font-size:13px;font-weight:700;")
+        layout.addWidget(status)
+
+        card = QFrame()
+        card.setObjectName("ProfileCard")
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(16, 14, 16, 14)
+        info = QLabel(f"Username\n{username}")
+        info.setStyleSheet("color:#d8dbe0;font-size:13px;line-height:1.4;")
+        card_layout.addWidget(info)
+        layout.addWidget(card)
+        layout.addStretch()
+
+        row = QHBoxLayout()
+        row.addStretch()
+        close_btn = QPushButton("Close")
+        logout_btn = QPushButton("Log out")
+        logout_btn.setObjectName("LogoutButton")
+        close_btn.clicked.connect(dialog.reject)
+
+        def do_logout():
+            answer = QMessageBox.question(
+                dialog, "Log out",
+                "Log out from this device? You will need to sign in again next time.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if answer == QMessageBox.StandardButton.Yes:
+                self.logout_requested.emit()
+                dialog.accept()
+
+        logout_btn.clicked.connect(do_logout)
+        row.addWidget(close_btn)
+        row.addWidget(logout_btn)
+        layout.addLayout(row)
+
+        dialog.setStyleSheet("""
+            QDialog{background:#0d1014;color:#f4f5f7;}
+            QFrame#ProfileCard{background:#15181d;border:1px solid #303640;border-radius:12px;}
+            QPushButton{background:#181c22;color:white;border:1px solid #3a404a;border-radius:9px;padding:10px 18px;font-weight:700;}
+            QPushButton:hover{border-color:#ff172b;background:#21161a;}
+            QPushButton#LogoutButton{background:#5b0b12;border-color:#a90f1e;}
+            QPushButton#LogoutButton:hover{background:#8b101b;border-color:#ff3045;}
+        """)
+        dialog.exec()
+        self.profile_btn.setText(self._profile_label())
 
     # ---------------------------------------------------------
     # WINDOW ACTIONS

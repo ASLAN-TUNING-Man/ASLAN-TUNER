@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt, QObject, Signal, QThread
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QProgressBar, QApplication
 
 # Replace with your public GitHub repository, e.g. "ali-zmax/ASLAN-TUNER".
-GITHUB_REPOSITORY = os.environ.get("ASLAN_GITHUB_REPOSITORY", "YOUR_GITHUB_USERNAME/ASLAN-TUNER")
+GITHUB_REPOSITORY = os.environ.get("ASLAN_GITHUB_REPOSITORY", "ASLAN-TUNING-Man/ASLAN-TUNER")
 
 
 def version_tuple(value):
@@ -79,6 +79,8 @@ class UpdatePage(QWidget):
         self.latest = None
         self._thread = None
         self._worker = None
+        self._checking = False
+        self._last_check_ok = False
         self.setObjectName("UpdatePage")
 
         layout = QVBoxLayout(self)
@@ -128,11 +130,16 @@ class UpdatePage(QWidget):
             #UpdatePage QProgressBar::chunk { background:#ff1026; border-radius:4px; }
         """)
 
-    def check_for_updates(self):
+    def check_for_updates(self, silent=False):
+        if self._checking:
+            return
+        self._checking = True
         self.check_btn.setEnabled(False)
         self.update_btn.setEnabled(False)
-        self.status.setStyleSheet("color:#d8dbe0;font-size:18px;font-weight:800;")
-        self.status.setText("Checking for updates…")
+        if not silent:
+            self.status.setStyleSheet("color:#d8dbe0;font-size:18px;font-weight:800;")
+            self.status.setText("Checking for updates…")
+            self.detail.setText("")
         self._thread = QThread(self)
         self._worker = _Worker(self.current_version)
         self._worker.moveToThread(self._thread)
@@ -145,6 +152,8 @@ class UpdatePage(QWidget):
         self._thread.start()
 
     def _checked(self, data):
+        self._checking = False
+        self._last_check_ok = True
         self.latest = data
         remote = data.get("version", "")
         newer = is_newer_version(remote, self.current_version)
@@ -156,18 +165,22 @@ class UpdatePage(QWidget):
             self.update_btn.setEnabled(False)
             self.verification_changed.emit(True)
         else:
-            self.status.setText("شما آپدیت نیستید")
+            self.status.setText("نسخه جدید موجود است")
             self.status.setStyleSheet("color:#ff3045;font-size:20px;font-weight:900;")
             self.detail.setText(f"نسخه نصب‌شده: v{self.current_version}\nنسخه جدید: v{remote}\nبرای ادامه کار باید برنامه را بروزرسانی کنید.")
             self.update_btn.setEnabled(bool(data.get("setup")))
             self.verification_changed.emit(False)
 
     def _failed(self, message):
+        self._checking = False
+        self._last_check_ok = False
         self.check_btn.setEnabled(True)
-        self.status.setText("بررسی بروزرسانی ناموفق بود")
-        self.status.setStyleSheet("color:#ff3045;font-size:18px;font-weight:900;")
-        self.detail.setText(message)
-        self.verification_changed.emit(False)
+        self.update_btn.setEnabled(False)
+        self.status.setText("حالت آفلاین / سرویس بروزرسانی در دسترس نیست")
+        self.status.setStyleSheet("color:#f5b84b;font-size:18px;font-weight:900;")
+        self.detail.setText("نرم‌افزار بدون اینترنت هم قابل استفاده است. پس از اتصال به اینترنت، بروزرسانی به‌صورت خودکار بررسی می‌شود.")
+        # Network/update-service failures must not block the application.
+        self.verification_changed.emit(True)
 
     def start_download(self):
         if not self.latest or not self.latest.get("setup"):
@@ -175,6 +188,7 @@ class UpdatePage(QWidget):
         url = self.latest["setup"].get("browser_download_url")
         if not url:
             return
+        self._checking = True
         self.update_btn.setEnabled(False)
         self.check_btn.setEnabled(False)
         self.progress.setVisible(True)
@@ -204,6 +218,7 @@ class UpdatePage(QWidget):
             self._download_failed(str(exc))
 
     def _download_failed(self, message):
+        self._checking = False
         self.progress.setVisible(False)
         self.check_btn.setEnabled(True)
         self.update_btn.setEnabled(True)

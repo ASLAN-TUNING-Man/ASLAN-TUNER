@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QGridLayout,
     QFrame,
     QMessageBox,
+    QScrollArea,
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -215,9 +216,20 @@ class ThrottleBodyCalculator(QDialog):
 
     def build_ui(self):
 
-        main_layout = QVBoxLayout(self)
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(0)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        content = QWidget()
+        main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(30, 25, 30, 25)
         main_layout.setSpacing(18)
+        scroll.setWidget(content)
+        root_layout.addWidget(scroll, 1)
 
         # ----------------------------------------------------
         # Header

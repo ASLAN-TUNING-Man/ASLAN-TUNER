@@ -35,6 +35,7 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QScrollArea,
     QDialog,
+    QMessageBox,
 )
 
 
@@ -43,8 +44,9 @@ from PySide6.QtWidgets import (
 # ============================================================
 
 from ui.base_window import ASLANMainWindow
-from auth import AuthDialog
+from auth import AuthDialog, is_session_active, logout as auth_logout
 from updater import UpdatePage
+from vehicle_manager import VEHICLE_MANAGER, VehicleInfoDialog, CustomEngineDialog, prepare_calculator, CUSTOM_KEY, blank_custom
 
 
 # ============================================================
@@ -151,6 +153,7 @@ LIGHT_BORDER = "#d5d8de"
 # ============================================================
 
 ICON_RED = "#ff1026"
+_ICON_CACHE = {}
 
 
 def create_vector_icon(
@@ -162,6 +165,11 @@ def create_vector_icon(
     Creates clean vector icons using QPainter.
     No emoji or external image files are used.
     """
+
+    cache_key = (str(icon_type), str(color), int(size))
+    cached = _ICON_CACHE.get(cache_key)
+    if cached is not None:
+        return QIcon(cached)
 
     pixmap = QPixmap(
         size,
@@ -771,9 +779,8 @@ def create_vector_icon(
 
     painter.end()
 
-    return QIcon(
-        pixmap
-    )
+    _ICON_CACHE[cache_key] = QPixmap(pixmap)
+    return QIcon(pixmap)
 
 
 # ============================================================
@@ -1940,20 +1947,16 @@ class Calculators(QWidget):
 
         from calculators.afr_lambda import AFRLambdaCalculator
 
-        calculator = AFRLambdaCalculator(
-            self
-        )
-
+        calculator = AFRLambdaCalculator(self)
+        prepare_calculator(calculator, "AFR / LAMBDA")
         calculator.exec()
 
     def open_stoich_calculator(self):
 
         from calculators.stoich import StoichCalculator
 
-        calculator = StoichCalculator(
-            self
-        )
-
+        calculator = StoichCalculator(self)
+        prepare_calculator(calculator, "STOICHIOMETRIC RATIO")
         calculator.exec()
 
     def open_ve_calculator(self):
@@ -1971,71 +1974,56 @@ class Calculators(QWidget):
             "columns": 16,
         }
 
-        calculator = VECalculator(
-            params=params,
-            parent=self
-        )
-
+        calculator = VECalculator(params=params, parent=self)
+        prepare_calculator(calculator, "VE ENGINE")
         calculator.exec()
 
     def open_injector_flow(self):
 
         from calculators.injector_flow import InjectorFlowCalculator
 
-        calculator = InjectorFlowCalculator(
-            parent=self
-        )
-
+        calculator = InjectorFlowCalculator(parent=self)
+        prepare_calculator(calculator, "INJECTOR FLOW")
         calculator.exec()
 
     def open_throttle_body(self):
 
         from calculators.throttle import ThrottleBodyCalculator
 
-        calculator = ThrottleBodyCalculator(
-            parent=self
-        )
-
+        calculator = ThrottleBodyCalculator(parent=self)
+        prepare_calculator(calculator, "THROTTLE BODY")
         calculator.exec()
 
     def open_runner_calculator(self):
 
         from calculators.runner import RunnerCalculator
 
-        calculator = RunnerCalculator(
-            parent=self
-        )
-
+        calculator = RunnerCalculator(parent=self)
+        prepare_calculator(calculator, "INTAKE RUNNER")
         calculator.exec()
 
     def open_power_torque(self):
 
         from calculators.power_torque import PowerTorqueCalculator
 
-        calculator = PowerTorqueCalculator(
-            parent=self
-        )
-
+        calculator = PowerTorqueCalculator(parent=self)
+        prepare_calculator(calculator, "POWER / TORQUE")
         calculator.exec()
 
     def open_turbo_calculator(self):
 
         from calculators.turbo import TurboCalculator
 
-        calculator = TurboCalculator(
-            parent=self
-        )
-
+        calculator = TurboCalculator(parent=self)
+        prepare_calculator(calculator, "TURBO SIZING")
         calculator.exec()
 
     def open_header(self):
 
         from calculators.header import HeaderCalculator
 
-        calculator = HeaderCalculator(
-            self
-        )
-
+        calculator = HeaderCalculator(self)
+        prepare_calculator(calculator, "HEADER ENGINEERING")
         calculator.exec()
 
 
@@ -2237,11 +2225,25 @@ class ECUTools(QWidget):
 
         from ecu_tools.engine_dyno import EngineDynoSimulator
 
-        calculator = EngineDynoSimulator(
-            parent=self
-        )
-
+        calculator = EngineDynoSimulator(parent=self)
+        prepare_calculator(calculator, "ENGINE DYNO SIMULATOR")
         calculator.exec()
+
+        # Keep the dyno result available to the same vehicle context.
+        # Calculator formulas remain untouched; only their input source is updated.
+        if VEHICLE_MANAGER.selected_params and getattr(calculator, "last_result", None):
+            result = calculator.last_result
+            peak_hp = result.get("peak_hp") or {}
+            peak_torque = result.get("peak_torque") or {}
+            if peak_hp.get("hp") is not None:
+                VEHICLE_MANAGER.selected_params["dyno_peak_power"] = peak_hp["hp"]
+                VEHICLE_MANAGER.selected_params["dyno_peak_power_rpm"] = peak_hp.get("rpm", 0)
+            if peak_torque.get("torque_nm") is not None:
+                VEHICLE_MANAGER.selected_params["dyno_peak_torque"] = peak_torque["torque_nm"]
+                VEHICLE_MANAGER.selected_params["dyno_peak_torque_rpm"] = peak_torque.get("rpm", 0)
+            self.update_active_vehicle_badge()
+            if hasattr(self, "vehicles_page"):
+                self.vehicles_page.update_active()
 
 
 # ============================================================
@@ -2250,178 +2252,320 @@ class ECUTools(QWidget):
 
 class Vehicles(QWidget):
 
-    def __init__(
-        self,
-        language_manager,
-        parent=None,
-    ):
-
+    def __init__(self, language_manager, parent=None):
         super().__init__(parent)
-
         self.language_manager = language_manager
+        self.cards = {}
 
-        outer_layout = QVBoxLayout(
-            self
-        )
-
-        outer_layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0
-        )
-
-        outer_layout.setSpacing(
-            0
-        )
-
-        # ====================================================
-        # SCROLL AREA
-        # ====================================================
+        outer_layout = QVBoxLayout(self)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
+        outer_layout.setSpacing(0)
 
         self.scroll_area = QScrollArea()
-
-        self.scroll_area.setWidgetResizable(
-            True
-        )
-
-        self.scroll_area.setFrameShape(
-            QFrame.Shape.NoFrame
-        )
-
-        self.scroll_area.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-
-        self.scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-
-        outer_layout.addWidget(
-            self.scroll_area
-        )
-
-        # ====================================================
-        # CONTENT
-        # ====================================================
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         self.content_widget = QWidget()
-
-        self.content_widget.setSizePolicy(
-            QSizePolicy.Policy.Expanding,
-            QSizePolicy.Policy.Minimum
-        )
-
-        layout = QVBoxLayout(
-            self.content_widget
-        )
-
-        layout.setContentsMargins(
-            38,
-            30,
-            38,
-            30
-        )
+        layout = QVBoxLayout(self.content_widget)
+        layout.setContentsMargins(34, 28, 34, 34)
+        layout.setSpacing(14)
 
         self.title = QLabel()
-
-        self.title.setObjectName(
-            "PageTitle"
-        )
-
-        layout.addWidget(
-            self.title
-        )
+        self.title.setObjectName("PageTitle")
+        layout.addWidget(self.title)
 
         self.subtitle = QLabel()
+        self.subtitle.setObjectName("Subtitle")
+        self.subtitle.setWordWrap(True)
+        layout.addWidget(self.subtitle)
 
-        self.subtitle.setObjectName(
-            "Subtitle"
+        self.active_banner = QFrame()
+        self.active_banner.setObjectName("ActiveVehicleBanner")
+        banner = QHBoxLayout(self.active_banner)
+        banner.setContentsMargins(16, 12, 16, 12)
+        self.active_label = QLabel("NO ACTIVE VEHICLE")
+        self.active_label.setObjectName("ActiveVehicleText")
+        banner.addWidget(self.active_label)
+        banner.addStretch()
+        self.clear_button = QPushButton("CLEAR")
+        self.clear_button.setObjectName("ToolButton")
+        self.clear_button.clicked.connect(self.clear_active)
+        banner.addWidget(self.clear_button)
+        layout.addWidget(self.active_banner)
+
+        self.grid_widget = QWidget()
+        self.grid = QGridLayout(self.grid_widget)
+        self.grid.setContentsMargins(0, 4, 0, 0)
+        self.grid.setHorizontalSpacing(14)
+        self.grid.setVerticalSpacing(14)
+        layout.addWidget(self.grid_widget)
+        layout.addStretch()
+
+        self.scroll_area.setWidget(self.content_widget)
+        outer_layout.addWidget(self.scroll_area)
+
+        self.language_manager.language_changed.connect(self.update_language)
+        self.update_language(self.language_manager.language)
+        self.refresh_cards()
+
+        self.setStyleSheet("""
+            QWidget#Vehicles { background:#090b0e; }
+            QFrame#ActiveVehicleBanner {
+                background:#111419;
+                border:1px solid #3a2025;
+                border-radius:14px;
+            }
+            QLabel#ActiveVehicleText { color:#ff3045; font-size:12px; font-weight:800; }
+            QFrame#VehicleCard {
+                background:qlineargradient(x1:0,y1:0,x2:1,y2:1,
+                    stop:0 #15191f, stop:0.55 #101318, stop:1 #0c0f13);
+                border:1px solid #2d333c;
+                border-radius:16px;
+            }
+            QFrame#VehicleCard:hover {
+                border:1px solid #e90018;
+                background:#15171c;
+            }
+            QFrame#VehicleCard[selected="true"] {
+                border:1px solid #ff1730;
+                background:#1a1014;
+            }
+            QFrame#VehicleCard[custom="true"] {
+                border:1px solid #7d1825;
+            }
+            QLabel#VehicleName { color:#f2f3f5; font-size:17px; font-weight:800; }
+            QLabel#VehicleEngine { color:#8f97a1; font-size:11px; }
+            QLabel#VehicleSpec { color:#c8ccd2; font-size:11px; }
+            QLabel#CustomBadge { color:#ff3145; font-size:10px; font-weight:900; }
+            QPushButton#VehicleAction {
+                background:#161a20; color:#e3e5e8; border:1px solid #303640;
+                border-radius:9px; padding:8px 10px; font-weight:700;
+            }
+            QPushButton#VehicleAction:hover { border-color:#e90018; background:#1e2229; }
+            QPushButton#VehicleUse {
+                background:#c90017; color:white; border:1px solid #ff3045;
+                border-radius:9px; padding:8px 10px; font-weight:800;
+            }
+            QPushButton#VehicleUse:hover { background:#ff172b; }
+            QPushButton#VehicleDelete {
+                background:#171116; color:#ff5363; border:1px solid #5a2029;
+                border-radius:9px; padding:7px 10px; font-weight:800;
+            }
+            QPushButton#VehicleDelete:hover { background:#2a1117; border-color:#ef1730; color:#ff7b88; }
+        """)
+
+    def refresh_cards(self):
+        while self.grid.count():
+            item = self.grid.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+        self.cards.clear()
+
+        profiles = VEHICLE_MANAGER.all_profiles()
+        if CUSTOM_KEY not in profiles:
+            profiles[CUSTOM_KEY] = blank_custom()
+        keys = list(profiles.keys())
+        columns = self._vehicle_columns()
+        self._vehicle_keys = keys
+        for index, key in enumerate(keys):
+            card = self._make_card(key, profiles[key])
+            self.cards[key] = card
+            self.grid.addWidget(card, index // columns, index % columns)
+        for c in range(columns):
+            self.grid.setColumnStretch(c, 1)
+
+    def _vehicle_columns(self):
+        width = max(360, self.width() - 80)
+        if width >= 1150:
+            return 3
+        if width >= 720:
+            return 2
+        return 1
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if hasattr(self, "_vehicle_keys"):
+            self.refresh_cards()
+
+    def _make_card(self, key, params):
+        card = QFrame()
+        card.setObjectName("VehicleCard")
+        card.setProperty("selected", key == VEHICLE_MANAGER.selected_key)
+        card.setProperty("custom", key == CUSTOM_KEY or key.startswith("CUSTOM::"))
+        card.setMinimumHeight(170)
+        card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        box = QVBoxLayout(card)
+        box.setContentsMargins(18, 16, 18, 16)
+        box.setSpacing(7)
+
+        top = QHBoxLayout()
+        name = QLabel(params.get("display_name", key))
+        name.setObjectName("VehicleName")
+        top.addWidget(name)
+        top.addStretch()
+        if key.startswith("CUSTOM::") or key == CUSTOM_KEY:
+            badge = QLabel("CUSTOM")
+            badge.setObjectName("CustomBadge")
+            top.addWidget(badge)
+        box.addLayout(top)
+
+        engine = QLabel(params.get("engine_name", "—"))
+        engine.setObjectName("VehicleEngine")
+        box.addWidget(engine)
+
+        spec = QLabel(
+            f"{params.get('displacement', '—')} cc  •  "
+            f"{params.get('cylinders', '—')} cyl  •  "
+            f"{params.get('power', '—')} hp  •  "
+            f"{params.get('torque', '—')} Nm"
         )
+        spec.setObjectName("VehicleSpec")
+        box.addWidget(spec)
 
-        self.subtitle.setWordWrap(
-            True
-        )
+        box.addStretch()
 
-        layout.addWidget(
-            self.subtitle
-        )
+        actions = QHBoxLayout()
+        info = QPushButton("VIEW INFORMATION")
+        info.setObjectName("VehicleAction")
+        use = QPushButton("USE PARAMETERS")
+        use.setObjectName("VehicleUse")
+        is_saved_custom = key.startswith("CUSTOM::")
+        if key == CUSTOM_KEY:
+            info.setText("ADD / EDIT ENGINE")
+            use.setText("CREATE PROFILE")
+            info.clicked.connect(lambda _=False: self.edit_custom())
+            use.clicked.connect(lambda _=False: self.edit_custom())
+            actions.addWidget(info)
+            actions.addWidget(use)
+        elif is_saved_custom:
+            info.setText("EDIT PROFILE")
+            info.clicked.connect(lambda _=False, k=key: self.edit_custom(k))
+            use.clicked.connect(lambda _=False, k=key: self.use_vehicle(k))
+            actions.addWidget(info)
+            actions.addWidget(use)
+            box.addLayout(actions)
 
-        layout.addSpacing(
-            20
-        )
+            delete_row = QHBoxLayout()
+            delete_row.setContentsMargins(0, 0, 0, 0)
+            delete_btn = QPushButton("DELETE PROFILE")
+            delete_btn.setObjectName("VehicleDelete")
+            delete_btn.clicked.connect(lambda _=False, k=key: self.delete_custom(k))
+            delete_row.addWidget(delete_btn)
+            box.addLayout(delete_row)
+            # The custom card has already been laid out.
+            card.mousePressEvent = lambda event, k=key: self.card_clicked(event, k)
+            return card
+        else:
+            info.clicked.connect(lambda _=False, k=key: self.show_info(k))
+            use.clicked.connect(lambda _=False, k=key: self.use_vehicle(k))
+            actions.addWidget(info)
+            actions.addWidget(use)
+        box.addLayout(actions)
 
-        vehicles = [
-            "RD.i",
-            "ROA",
-            "405",
-            "206/2",
-            "206/5",
-            "PARS",
-            "PRIDE",
-            "PAYKAN",
-            "CUSTOM ENGINE",
-        ]
+        # Clicking anywhere on the card opens the two-choice action sheet.
+        card.mousePressEvent = lambda event, k=key: self.card_clicked(event, k)
+        return card
 
-        for name in vehicles:
+    def card_clicked(self, event, key):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.show_vehicle_actions(key)
 
-            button = QPushButton(
-                name
+    def show_vehicle_actions(self, key):
+        if key == CUSTOM_KEY:
+            self.edit_custom()
+            return
+        params = VEHICLE_MANAGER.get(key)
+        if not params:
+            return
+        box = QMessageBox(self)
+        box.setWindowTitle(params.get("display_name", key))
+        box.setText("Choose what you want to do with this vehicle.")
+        box.setInformativeText("Vehicle information or load its tuning parameters into ASLAN TUNER.")
+        info = box.addButton("VIEW INFORMATION", QMessageBox.ButtonRole.AcceptRole)
+        use = box.addButton("USE PARAMETERS", QMessageBox.ButtonRole.AcceptRole)
+        box.addButton("CANCEL", QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is info:
+            self.show_info(key)
+        elif box.clickedButton() is use:
+            self.use_vehicle(key)
+
+    def edit_custom(self, key=None):
+        existing = VEHICLE_MANAGER.custom_profiles.get(key) if key else None
+        existing_key = key if existing is not None else None
+        if existing is None and VEHICLE_MANAGER.custom_profiles:
+            # Backward-compatible shortcut: the generic CUSTOM ENGINE card
+            # opens the most recently created profile for editing.
+            existing_key = list(VEHICLE_MANAGER.custom_profiles.keys())[-1]
+            existing = VEHICLE_MANAGER.custom_profiles[existing_key]
+        dialog = CustomEngineDialog(existing=existing, parent=self, existing_key=existing_key)
+        if dialog.exec():
+            self.refresh_cards()
+
+    def delete_custom(self, key):
+        params = VEHICLE_MANAGER.custom_profiles.get(key)
+        if not params:
+            return
+        name = params.get("display_name", key.replace("CUSTOM::", ""))
+        box = QMessageBox(self)
+        box.setWindowTitle("Delete custom profile")
+        box.setText(f'Delete custom profile "{name}"?')
+        box.setInformativeText("This removes the saved profile from this computer. It does not affect built-in vehicles.")
+        yes = box.addButton("DELETE", QMessageBox.ButtonRole.DestructiveRole)
+        box.addButton("CANCEL", QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is yes:
+            VEHICLE_MANAGER.delete_custom(key)
+            self.refresh_cards()
+            window = self.window()
+            if hasattr(window, "update_active_vehicle_badge"):
+                window.update_active_vehicle_badge()
+
+    def show_info(self, key):
+        params = VEHICLE_MANAGER.get(key)
+        if params:
+            VehicleInfoDialog(key, params, self).exec()
+
+    def use_vehicle(self, key):
+        if VEHICLE_MANAGER.select(key):
+            self.update_active()
+            self.refresh_cards()
+            window = self.window()
+            if hasattr(window, "update_active_vehicle_badge"):
+                window.update_active_vehicle_badge()
+
+    def clear_active(self):
+        VEHICLE_MANAGER.clear()
+        self.update_active()
+        self.refresh_cards()
+        window = self.window()
+        if hasattr(window, "update_active_vehicle_badge"):
+            window.update_active_vehicle_badge()
+
+    def update_active(self):
+        key = VEHICLE_MANAGER.selected_key
+        params = VEHICLE_MANAGER.selected_params
+        if key and params:
+            self.active_label.setText(
+                f"ACTIVE VEHICLE  •  {params.get('display_name', key)}  •  "
+                f"{params.get('engine_name', '—')}  •  PARAMETERS LOADED"
             )
-
-            button.setMinimumHeight(
-                48
-            )
-
-            button.setSizePolicy(
-                QSizePolicy.Policy.Expanding,
-                QSizePolicy.Policy.Fixed
-            )
-
-            button.setObjectName(
-                "ToolButton"
-            )
-
-            button.setCursor(
-                Qt.CursorShape.PointingHandCursor
-            )
-
-            layout.addWidget(
-                button
-            )
-
-        layout.addSpacing(
-            20
-        )
-
-        self.scroll_area.setWidget(
-            self.content_widget
-        )
-
-        self.language_manager.language_changed.connect(
-            self.update_language
-        )
-
-        self.update_language(
-            self.language_manager.language
-        )
+        else:
+            self.active_label.setText("NO ACTIVE VEHICLE  •  CALCULATORS USE THEIR NORMAL INPUTS")
 
     def update_language(self, language):
-
         self.title.setText(
-            self.language_manager.text(
-                "VEHICLE PROFILES",
-                "پروفایل خودروها"
-            )
+            self.language_manager.text("VEHICLE PROFILES", "پروفایل خودروها")
         )
-
         self.subtitle.setText(
             self.language_manager.text(
-                "Vehicle and engine profiles",
-                "پروفایل موتور و خودرو"
+                "Select a vehicle to inspect it or load its parameters into all compatible calculators.",
+                "خودرو را برای مشاهده اطلاعات یا بارگذاری پارامترها در محاسبات انتخاب کنید."
             )
         )
-
+        self.update_active()
 
 
 # ============================================================
@@ -3111,6 +3255,8 @@ class MainWindow(ASLANMainWindow):
             "ASLAN_TUNER"
         )
 
+        self.title_bar.logout_requested.connect(self._logout_account)
+
         # ====================================================
         # LANGUAGE
         # ====================================================
@@ -3172,126 +3318,68 @@ class MainWindow(ASLANMainWindow):
         # ====================================================
 
         self.sidebar = QFrame()
+        self.sidebar.setObjectName("Sidebar")
+        self.sidebar.setFixedWidth(250)
 
-        self.sidebar.setObjectName(
-            "Sidebar"
-        )
+        sidebar_layout = QVBoxLayout(self.sidebar)
+        sidebar_layout.setContentsMargins(15, 18, 10, 12)
+        sidebar_layout.setSpacing(8)
 
-        self.sidebar.setFixedWidth(
-            250
-        )
-
-        sidebar_layout = QVBoxLayout(
-            self.sidebar
-        )
-
-        sidebar_layout.setContentsMargins(
-            15,
-            18,
-            15,
-            15
-        )
-
-        sidebar_layout.setSpacing(
-            8
-        )
-
-        # ====================================================
-        # LOGO
-        # ====================================================
-
+        # Keep the logo fixed. Menu items and status information scroll below it
+        # so they can never overlap the logo on short/small windows.
         self.logo = AslanLogo()
+        sidebar_layout.addWidget(self.logo)
+        sidebar_layout.addSpacing(6)
 
-        sidebar_layout.addWidget(
-            self.logo
-        )
+        self.sidebar_scroll = QScrollArea()
+        self.sidebar_scroll.setObjectName("SidebarScroll")
+        self.sidebar_scroll.setWidgetResizable(True)
+        self.sidebar_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        self.sidebar_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.sidebar_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
-        sidebar_layout.addSpacing(
-            6
-        )
+        self.sidebar_content = QWidget()
+        self.sidebar_content.setObjectName("SidebarContent")
+        sidebar_content_layout = QVBoxLayout(self.sidebar_content)
+        sidebar_content_layout.setContentsMargins(0, 0, 5, 0)
+        sidebar_content_layout.setSpacing(8)
 
         # ====================================================
         # MENU
         # ====================================================
 
-        self.dashboard_button = SidebarButton(
-            "home",
-            "Home",
-            "خانه",
-            self.language_manager,
-        )
-
-        self.calculators_button = SidebarButton(
-            "calculator",
-            "Calculators",
-            "محاسبات",
-            self.language_manager,
-        )
-
-        self.ecu_button = SidebarButton(
-            "ecu",
-            "ECU Tools",
-            "ابزار ECU",
-            self.language_manager,
-        )
-
-        self.vehicles_button = SidebarButton(
-            "vehicle",
-            "Vehicles",
-            "خودروها",
-            self.language_manager,
-        )
-
-        self.settings_button = SidebarButton(
-            "settings",
-            "Settings",
-            "تنظیمات",
-            self.language_manager,
-        )
-
-        self.update_button = SidebarButton(
-            "update",
-            "Updates",
-            "بروزرسانی",
-            self.language_manager,
-        )
+        self.dashboard_button = SidebarButton("home", "Home", "خانه", self.language_manager)
+        self.calculators_button = SidebarButton("calculator", "Calculators", "محاسبات", self.language_manager)
+        self.ecu_button = SidebarButton("ecu", "ECU Tools", "ابزار ECU", self.language_manager)
+        self.vehicles_button = SidebarButton("vehicle", "Vehicles", "خودروها", self.language_manager)
+        self.settings_button = SidebarButton("settings", "Settings", "تنظیمات", self.language_manager)
+        self.update_button = SidebarButton("update", "Updates", "بروزرسانی", self.language_manager)
 
         self.menu_buttons = [
-            self.dashboard_button,
-            self.calculators_button,
-            self.ecu_button,
-            self.vehicles_button,
-            self.settings_button,
-            self.update_button,
+            self.dashboard_button, self.calculators_button, self.ecu_button,
+            self.vehicles_button, self.settings_button, self.update_button,
         ]
 
         for button in self.menu_buttons:
+            sidebar_content_layout.addWidget(button)
 
-            sidebar_layout.addWidget(
-                button
-            )
+        sidebar_content_layout.addSpacing(8)
+        sidebar_content_layout.addStretch(1)
 
-        sidebar_layout.addStretch()
+        self.active_vehicle_badge = QLabel("NO ACTIVE VEHICLE")
+        self.active_vehicle_badge.setObjectName("ActiveVehicleBadge")
+        self.active_vehicle_badge.setWordWrap(True)
+        self.active_vehicle_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        sidebar_content_layout.addWidget(self.active_vehicle_badge)
+        self.update_active_vehicle_badge()
 
-        # ====================================================
-        # VERSION
-        # ====================================================
+        self.version = QLabel(f"ASLAN TUNER\nv{APP_VERSION}")
+        self.version.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.version.setObjectName("Version")
+        sidebar_content_layout.addWidget(self.version)
 
-        self.version = QLabel(
-            f"ASLAN TUNER\nv{APP_VERSION}"
-        )
-
-        self.version.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-
-        self.version.setObjectName(
-            "Version"
-        )
-
-        sidebar_layout.addWidget(
-            self.version
-        )
+        self.sidebar_scroll.setWidget(self.sidebar_content)
+        sidebar_layout.addWidget(self.sidebar_scroll, 1)
 
         # ====================================================
         # PAGES
@@ -3446,11 +3534,22 @@ class MainWindow(ASLANMainWindow):
         )
 
         # ====================================================
-        # MANDATORY UPDATE GATE
+        # UPDATE GATE
         # ====================================================
-        self._update_verified = False
+        # Fail-open when the network/update service is unavailable so the
+        # application remains usable offline. A background retry locks the UI
+        # only when a newer release is actually confirmed.
+        self._update_verified = True
         self.update_page.verification_changed.connect(self._on_update_verification)
-        self.update_page.check_for_updates()
+
+        from PySide6.QtCore import QTimer
+        self._update_retry_timer = QTimer(self)
+        self._update_retry_timer.setInterval(45000)
+        self._update_retry_timer.timeout.connect(self._retry_update_check)
+        self._update_retry_timer.start()
+        # Let the main window render first; the network check then runs in its
+        # own worker without delaying the initial visual response.
+        QTimer.singleShot(650, self.update_page.check_for_updates)
 
     # ========================================================
     # NAVIGATION
@@ -3464,6 +3563,28 @@ class MainWindow(ASLANMainWindow):
             self.pages.setCurrentIndex(5)
         elif self.pages.currentIndex() == 5:
             self.pages.setCurrentIndex(0)
+
+    def _retry_update_check(self):
+        # The updater itself performs the network request in a worker thread,
+        # so this retry never blocks the UI thread.
+        if getattr(self.update_page, "_checking", False):
+            return
+        self.update_page.check_for_updates(silent=True)
+
+    def update_active_vehicle_badge(self):
+
+        if not hasattr(self, "active_vehicle_badge"):
+            return
+
+        params = VEHICLE_MANAGER.selected_params
+        if params:
+            self.active_vehicle_badge.setText(
+                "ACTIVE VEHICLE\\n" +
+                str(params.get("display_name", VEHICLE_MANAGER.selected_key)) +
+                "\\nPARAMETERS LOADED"
+            )
+        else:
+            self.active_vehicle_badge.setText("NO ACTIVE VEHICLE")
 
     def go_to_page(self, index):
 
@@ -3532,6 +3653,10 @@ class MainWindow(ASLANMainWindow):
     # RESPONSIVE WINDOW
     # ========================================================
 
+    def _logout_account(self):
+        auth_logout(self.settings)
+        self.close()
+
     def setup_responsive_window(self):
 
         screen = QApplication.primaryScreen()
@@ -3545,33 +3670,15 @@ class MainWindow(ASLANMainWindow):
         screen_width = geometry.width()
         screen_height = geometry.height()
 
-        target_width = int(
-            screen_width * 0.82
-        )
+        # Keep the main window proportional to the actual display.  Do not
+        # enforce a fixed 980x620 minimum on small laptops/monitors.
+        target_width = int(screen_width * 0.84)
+        target_height = int(screen_height * 0.84)
 
-        target_height = int(
-            screen_height * 0.82
-        )
-
-        target_width = max(
-            980,
-            target_width
-        )
-
-        target_height = max(
-            620,
-            target_height
-        )
-
-        target_width = min(
-            target_width,
-            screen_width - 40
-        )
-
-        target_height = min(
-            target_height,
-            screen_height - 70
-        )
+        target_width = max(760, min(target_width, screen_width - 24))
+        target_height = max(500, min(target_height, screen_height - 36))
+        target_width = min(target_width, screen_width)
+        target_height = min(target_height, screen_height)
 
         self.resize(
             target_width,
@@ -3782,6 +3889,41 @@ class MainWindow(ASLANMainWindow):
                 border-right: 1px solid {sidebar_border};
             }}
 
+            #SidebarScroll {{
+                background: transparent;
+                border: none;
+            }}
+
+            #SidebarScroll > QWidget > QWidget#SidebarContent {{
+                background: transparent;
+            }}
+
+            #SidebarScroll QScrollBar:vertical {{
+                width: 6px;
+                background: transparent;
+                margin: 2px 0 2px 0;
+            }}
+
+            #SidebarScroll QScrollBar::handle:vertical {{
+                background: #3b4048;
+                border-radius: 3px;
+                min-height: 28px;
+            }}
+
+            #SidebarScroll QScrollBar::handle:vertical:hover {{
+                background: {RED};
+            }}
+
+            #SidebarScroll QScrollBar::add-line:vertical,
+            #SidebarScroll QScrollBar::sub-line:vertical {{
+                height: 0px;
+            }}
+
+            #SidebarScroll QScrollBar::add-page:vertical,
+            #SidebarScroll QScrollBar::sub-page:vertical {{
+                background: transparent;
+            }}
+
             /* =================================================
                SIDEBAR BUTTON
                ================================================= */
@@ -3815,6 +3957,16 @@ class MainWindow(ASLANMainWindow):
                 background: #351016;
 
                 border: 1px solid {RED};
+            }}
+
+            #ActiveVehicleBadge {{
+                background: #151015;
+                border: 1px solid #4a2028;
+                border-radius: 10px;
+                padding: 9px 8px;
+                color: #ff3045;
+                font-size: 10px;
+                font-weight: 800;
             }}
 
             /* =================================================
@@ -4185,9 +4337,10 @@ def main():
     # --------------------------------------------------------
 
     account_settings = QSettings("ASLAN", "ASLAN_TUNER")
-    auth = AuthDialog(account_settings)
-    if auth.exec() != QDialog.DialogCode.Accepted:
-        return 0
+    if not is_session_active(account_settings):
+        auth = AuthDialog(account_settings)
+        if auth.exec() != QDialog.DialogCode.Accepted:
+            return 0
 
     # --------------------------------------------------------
     # Main Window

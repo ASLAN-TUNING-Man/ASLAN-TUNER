@@ -15,7 +15,7 @@
 
 <div class="node">
   <a name="main.py"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/main.py" type="text/plain"><tt>main.py</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -24,6 +24,7 @@ imports:
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
  &#8226;   <a href="#abc">abc</a>
+ &#8226;   <a href="#auth">auth</a>
  &#8226;   <a href="#calculators.afr_lambda">calculators.afr_lambda</a>
  &#8226;   <a href="#calculators.header">calculators.header</a>
  &#8226;   <a href="#calculators.injector_flow">calculators.injector_flow</a>
@@ -184,11 +185,14 @@ imports:
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
  &#8226;   <a href="#stat">stat</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#time">time</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#ui.base_window">ui.base_window</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -243,6 +247,7 @@ imported by:
  &#8226;   <a href="#PySide6.QtGui">PySide6.QtGui</a>
  &#8226;   <a href="#PySide6.QtNetwork">PySide6.QtNetwork</a>
  &#8226;   <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
+ &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib.resources.readers">importlib.resources.readers</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#logging">logging</a>
@@ -318,6 +323,8 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#ui.base_window">ui.base_window</a>
  &#8226;   <a href="#ui.topbar">ui.topbar</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
 
   </div>
 
@@ -351,6 +358,7 @@ imported by:
  &#8226;   <a href="#ecu_tools.engine_dyno">ecu_tools.engine_dyno</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#ui.topbar">ui.topbar</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
 
   </div>
 
@@ -399,6 +407,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
+ &#8226;   <a href="#auth">auth</a>
  &#8226;   <a href="#calculators.afr_lambda">calculators.afr_lambda</a>
  &#8226;   <a href="#calculators.header">calculators.header</a>
  &#8226;   <a href="#calculators.injector_flow">calculators.injector_flow</a>
@@ -412,6 +421,8 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#ui.base_window">ui.base_window</a>
  &#8226;   <a href="#ui.topbar">ui.topbar</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
 
   </div>
 
@@ -781,6 +792,7 @@ imported by:
   <tt>_hashlib</tt> <span class="moduletype"><tt>C:\Users\alizmax\AppData\Local\Programs\Python\Python313\DLLs\_hashlib.pyd</tt></span>  <div class="import">
 imported by:
     <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#hmac">hmac</a>
 
   </div>
 
@@ -925,7 +937,8 @@ imported by:
   <a name="_operator"></a>
   <tt>_operator</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
-    <a href="#operator">operator</a>
+    <a href="#hmac">hmac</a>
+ &#8226;   <a href="#operator">operator</a>
 
   </div>
 
@@ -1074,6 +1087,17 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="_scproxy"></a>
+  <a target="code" href="" type="text/plain"><tt>_scproxy</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="_sha1"></a>
   <tt>_sha1</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
@@ -1138,6 +1162,21 @@ imported by:
     <a href="#re">re</a>
  &#8226;   <a href="#re._compiler">re._compiler</a>
  &#8226;   <a href="#re._constants">re._constants</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="_ssl"></a>
+  <tt>_ssl</tt> <span class="moduletype"><tt>C:\Users\alizmax\AppData\Local\Programs\Python\Python313\DLLs\_ssl.pyd</tt></span>  <div class="import">
+imports:
+    <a href="#socket">socket</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ssl">ssl</a>
 
   </div>
 
@@ -1328,6 +1367,7 @@ imported by:
   <tt>_winapi</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#encodings">encodings</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -1448,6 +1488,24 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="auth"></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/auth.py" type="text/plain"><tt>auth</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
+ &#8226;   <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#secrets">secrets</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="base64"></a>
   <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/base64.py" type="text/plain"><tt>base64</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -1466,7 +1524,10 @@ imported by:
  &#8226;   <a href="#email.base64mime">email.base64mime</a>
  &#8226;   <a href="#email.encoders">email.encoders</a>
  &#8226;   <a href="#encodings.base64_codec">encodings.base64_codec</a>
+ &#8226;   <a href="#secrets">secrets</a>
  &#8226;   <a href="#shiboken6">shiboken6</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -1504,6 +1565,7 @@ imported by:
     <a href="#ecu_tools.engine_dyno">ecu_tools.engine_dyno</a>
  &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#statistics">statistics</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -1576,7 +1638,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.afr_lambda"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/afr_lambda.py" type="text/plain"><tt>calculators.afr_lambda</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/afr_lambda.py" type="text/plain"><tt>calculators.afr_lambda</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1598,7 +1660,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.header"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/header.py" type="text/plain"><tt>calculators.header</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/header.py" type="text/plain"><tt>calculators.header</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1619,7 +1681,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.injector_flow"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/injector_flow.py" type="text/plain"><tt>calculators.injector_flow</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/injector_flow.py" type="text/plain"><tt>calculators.injector_flow</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1640,7 +1702,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.power_torque"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/power_torque.py" type="text/plain"><tt>calculators.power_torque</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/power_torque.py" type="text/plain"><tt>calculators.power_torque</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1659,7 +1721,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.runner"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/runner.py" type="text/plain"><tt>calculators.runner</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/runner.py" type="text/plain"><tt>calculators.runner</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1678,7 +1740,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.stoich"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/stoich.py" type="text/plain"><tt>calculators.stoich</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/stoich.py" type="text/plain"><tt>calculators.stoich</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1697,7 +1759,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.throttle"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/throttle.py" type="text/plain"><tt>calculators.throttle</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/throttle.py" type="text/plain"><tt>calculators.throttle</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1716,7 +1778,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.turbo"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/turbo.py" type="text/plain"><tt>calculators.turbo</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/turbo.py" type="text/plain"><tt>calculators.turbo</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1735,7 +1797,7 @@ imported by:
 
 <div class="node">
   <a name="calculators.ve"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/calculators/ve.py" type="text/plain"><tt>calculators.ve</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/calculators/ve.py" type="text/plain"><tt>calculators.ve</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -1771,6 +1833,8 @@ imports:
 imported by:
     <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#email._parseaddr">email._parseaddr</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#ssl">ssl</a>
 
   </div>
 
@@ -1953,6 +2017,7 @@ imported by:
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#shutil">shutil</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#string">string</a>
  &#8226;   <a href="#threading">threading</a>
@@ -1982,6 +2047,7 @@ imports:
 imported by:
     <a href="#_threading_local">_threading_local</a>
  &#8226;   <a href="#ast">ast</a>
+ &#8226;   <a href="#getpass">getpass</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.resources._adapters">importlib.resources._adapters</a>
@@ -1991,6 +2057,7 @@ imported by:
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
 
   </div>
@@ -2031,6 +2098,7 @@ imported by:
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#gettext">gettext</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -2120,6 +2188,7 @@ imported by:
     <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#calendar">calendar</a>
  &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
 
   </div>
 
@@ -2168,7 +2237,7 @@ imported by:
 
 <div class="node">
   <a name="ecu_tools"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/ecu_tools/__init__.py" type="text/plain"><tt>ecu_tools</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/ecu_tools/__init__.py" type="text/plain"><tt>ecu_tools</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
 imported by:
     <a href="#ecu_tools.engine_dyno">ecu_tools.engine_dyno</a>
@@ -2179,7 +2248,7 @@ imported by:
 
 <div class="node">
   <a name="ecu_tools.engine_dyno"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/ecu_tools/engine_dyno.py" type="text/plain"><tt>ecu_tools.engine_dyno</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/ecu_tools/engine_dyno.py" type="text/plain"><tt>ecu_tools.engine_dyno</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -2233,6 +2302,7 @@ imported by:
  &#8226;   <a href="#email.quoprimime">email.quoprimime</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -2569,6 +2639,7 @@ imported by:
     <a href="#email.contentmanager">email.contentmanager</a>
  &#8226;   <a href="#email.feedparser">email.feedparser</a>
  &#8226;   <a href="#email.policy">email.policy</a>
+ &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib.metadata._adapters">importlib.metadata._adapters</a>
 
   </div>
@@ -2589,6 +2660,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#email">email</a>
+ &#8226;   <a href="#http.client">http.client</a>
 
   </div>
 
@@ -2663,6 +2735,7 @@ imported by:
  &#8226;   <a href="#email.headerregistry">email.headerregistry</a>
  &#8226;   <a href="#email.message">email.message</a>
  &#8226;   <a href="#email.policy">email.policy</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -5192,12 +5265,14 @@ imported by:
  &#8226;   <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
  &#8226;   <a href="#ast">ast</a>
  &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#http">http</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#signal">signal</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
 
   </div>
 
@@ -5209,10 +5284,12 @@ imported by:
 imported by:
     <a href="#gettext">gettext</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#pathlib._abc">pathlib._abc</a>
  &#8226;   <a href="#posixpath">posixpath</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tempfile">tempfile</a>
 
@@ -5247,6 +5324,7 @@ imported by:
     <a href="#glob">glob</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#tracemalloc">tracemalloc</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -5269,6 +5347,26 @@ imports:
   <div class="import">
 imported by:
     <a href="#statistics">statistics</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ftplib"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/ftplib.py" type="text/plain"><tt>ftplib</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#netrc">netrc</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#sys">sys</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -5374,7 +5472,31 @@ imports:
   <div class="import">
 imported by:
     <a href="#base64">base64</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#quopri">quopri</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="getpass"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/getpass.py" type="text/plain"><tt>getpass</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#msvcrt">msvcrt</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pwd">pwd</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#termios">termios</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -5489,7 +5611,10 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#random">random</a>
+    <a href="#auth">auth</a>
+ &#8226;   <a href="#hmac">hmac</a>
+ &#8226;   <a href="#random">random</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -5507,6 +5632,99 @@ imports:
 imported by:
     <a href="#collections">collections</a>
  &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="hmac"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/hmac.py" type="text/plain"><tt>hmac</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_hashlib">_hashlib</a>
+ &#8226;   <a href="#_operator">_operator</a>
+ &#8226;   <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#secrets">secrets</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="http"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/http/__init__.py" type="text/plain"><tt>http</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#enum">enum</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#http.client">http.client</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="http.client"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/http/client.py" type="text/plain"><tt>http.client</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#'collections.abc'">'collections.abc'</a>
+ &#8226;   <a href="#email.message">email.message</a>
+ &#8226;   <a href="#email.parser">email.parser</a>
+ &#8226;   <a href="#errno">errno</a>
+ &#8226;   <a href="#http">http</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="http.cookiejar"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/http/cookiejar.py" type="text/plain"><tt>http.cookiejar</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#calendar">calendar</a>
+ &#8226;   <a href="#copy">copy</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#http">http</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#traceback">traceback</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -6097,7 +6315,10 @@ imported by:
  &#8226;   <a href="#email.parser">email.parser</a>
  &#8226;   <a href="#encodings.quopri_codec">encodings.quopri_codec</a>
  &#8226;   <a href="#encodings.uu_codec">encodings.uu_codec</a>
+ &#8226;   <a href="#getpass">getpass</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.resources._adapters">importlib.resources._adapters</a>
  &#8226;   <a href="#importlib.resources.abc">importlib.resources.abc</a>
  &#8226;   <a href="#logging">logging</a>
@@ -6114,6 +6335,8 @@ imported by:
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#tokenize">tokenize</a>
+ &#8226;   <a href="#urllib.error">urllib.error</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
 
@@ -6133,6 +6356,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -6185,6 +6409,8 @@ imported by:
  &#8226;   <a href="#json.decoder">json.decoder</a>
  &#8226;   <a href="#json.encoder">json.encoder</a>
  &#8226;   <a href="#json.scanner">json.scanner</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
 
   </div>
 
@@ -6338,6 +6564,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
 
   </div>
 
@@ -6402,10 +6629,51 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="mimetypes"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/mimetypes.py" type="text/plain"><tt>mimetypes</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_winapi">_winapi</a>
+ &#8226;   <a href="#getopt">getopt</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#winreg">winreg</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="msvcrt"></a>
   <tt>msvcrt</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
-    <a href="#subprocess">subprocess</a>
+    <a href="#getpass">getpass</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="netrc"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/netrc.py" type="text/plain"><tt>netrc</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#os">os</a>
+ &#8226;   <a href="#pwd">pwd</a>
+ &#8226;   <a href="#stat">stat</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ftplib">ftplib</a>
 
   </div>
 
@@ -6444,6 +6712,23 @@ imported by:
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#os.path">os.path</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="nturl2path"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/nturl2path.py" type="text/plain"><tt>nturl2path</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#string">string</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -6553,9 +6838,11 @@ imported by:
  &#8226;   <a href="#fnmatch">fnmatch</a>
  &#8226;   <a href="#genericpath">genericpath</a>
  &#8226;   <a href="#getopt">getopt</a>
+ &#8226;   <a href="#getpass">getpass</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.metadata._meta">importlib.metadata._meta</a>
  &#8226;   <a href="#importlib.resources._common">importlib.resources._common</a>
@@ -6566,6 +6853,8 @@ imported by:
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#lzma">lzma</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#netrc">netrc</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#os.path">os.path</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
@@ -6577,10 +6866,13 @@ imported by:
  &#8226;   <a href="#shiboken6">shiboken6</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipfile._path.glob">zipfile._path.glob</a>
 
@@ -6626,6 +6918,7 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pathlib._abc">pathlib._abc</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
 
   </div>
@@ -6750,6 +7043,7 @@ imported by:
     <a href="#fnmatch">fnmatch</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
@@ -6784,7 +7078,9 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>pwd</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#pathlib._local">pathlib._local</a>
+    <a href="#getpass">getpass</a>
+ &#8226;   <a href="#netrc">netrc</a>
+ &#8226;   <a href="#pathlib._local">pathlib._local</a>
  &#8226;   <a href="#posixpath">posixpath</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -6863,6 +7159,7 @@ imports:
 imported by:
     <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#secrets">secrets</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#tempfile">tempfile</a>
 
@@ -6908,8 +7205,11 @@ imported by:
  &#8226;   <a href="#encodings.idna">encodings.idna</a>
  &#8226;   <a href="#fnmatch">fnmatch</a>
  &#8226;   <a href="#fractions">fractions</a>
+ &#8226;   <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.metadata._adapters">importlib.metadata._adapters</a>
  &#8226;   <a href="#importlib.metadata._text">importlib.metadata._text</a>
@@ -6941,6 +7241,7 @@ imported by:
  &#8226;   <a href="#tokenize">tokenize</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
  &#8226;   <a href="#zipfile._path.glob">zipfile._path.glob</a>
@@ -7061,6 +7362,24 @@ imported by:
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
     <a href="#posix">posix</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="secrets"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/secrets.py" type="text/plain"><tt>secrets</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#base64">base64</a>
+ &#8226;   <a href="#hmac">hmac</a>
+ &#8226;   <a href="#random">random</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#auth">auth</a>
 
   </div>
 
@@ -7228,7 +7547,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#email.utils">email.utils</a>
+    <a href="#_ssl">_ssl</a>
+ &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#ftplib">ftplib</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -7289,6 +7613,34 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="ssl"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/ssl.py" type="text/plain"><tt>ssl</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_ssl">_ssl</a>
+ &#8226;   <a href="#base64">base64</a>
+ &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#collections">collections</a>
+ &#8226;   <a href="#enum">enum</a>
+ &#8226;   <a href="#errno">errno</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ftplib">ftplib</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="stat"></a>
   <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/stat.py" type="text/plain"><tt>stat</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -7301,6 +7653,7 @@ imported by:
     <a href="#genericpath">genericpath</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#netrc">netrc</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#pathlib._abc">pathlib._abc</a>
  &#8226;   <a href="#posixpath">posixpath</a>
@@ -7356,6 +7709,8 @@ imported by:
  &#8226;   <a href="#email._header_value_parser">email._header_value_parser</a>
  &#8226;   <a href="#email.quoprimime">email.quoprimime</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#nturl2path">nturl2path</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -7428,7 +7783,9 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#os">os</a>
+    <a href="#main.py">main.py</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#updater">updater</a>
 
   </div>
 
@@ -7466,10 +7823,13 @@ imported by:
  &#8226;   <a href="#encodings.utf_32">encodings.utf_32</a>
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#fractions">fractions</a>
+ &#8226;   <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#getopt">getopt</a>
+ &#8226;   <a href="#getpass">getpass</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib">importlib</a>
  &#8226;   <a href="#importlib._bootstrap_external">importlib._bootstrap_external</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
@@ -7479,6 +7839,7 @@ imported by:
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
@@ -7495,6 +7856,7 @@ imported by:
  &#8226;   <a href="#shiboken6">shiboken6</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tarfile">tarfile</a>
@@ -7504,6 +7866,7 @@ imported by:
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
  &#8226;   <a href="#zipfile">zipfile</a>
@@ -7568,6 +7931,20 @@ imports:
 imported by:
     <a href="#importlib.resources._common">importlib.resources._common</a>
  &#8226;   <a href="#shiboken6">shiboken6</a>
+ &#8226;   <a href="#updater">updater</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#urllib.response">urllib.response</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="termios"></a>
+  <a target="code" href="" type="text/plain"><tt>termios</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#getpass">getpass</a>
 
   </div>
 
@@ -7614,6 +7991,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#_threading_local">_threading_local</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.util">importlib.util</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -7641,12 +8019,15 @@ imported by:
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#gc">gc</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#random">random</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -7713,7 +8094,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#logging">logging</a>
+    <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#shiboken6">shiboken6</a>
@@ -7842,7 +8224,7 @@ imported by:
 
 <div class="node">
   <a name="ui.base_window"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/ui/base_window.py" type="text/plain"><tt>ui.base_window</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/ui/base_window.py" type="text/plain"><tt>ui.base_window</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -7862,7 +8244,7 @@ imported by:
 
 <div class="node">
   <a name="ui.topbar"></a>
-  <a target="code" href="///C:/Users/alizmax/Desktop/base-don%27t-delete-this-file/ASLAN-TUNER_py/ui/topbar.py" type="text/plain"><tt>ui.topbar</tt></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/ui/topbar.py" type="text/plain"><tt>ui.topbar</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#PySide6.QtCore">PySide6.QtCore</a>
@@ -7876,6 +8258,7 @@ imported by:
     <a href="#calculators.header">calculators.header</a>
  &#8226;   <a href="#ecu_tools.engine_dyno">ecu_tools.engine_dyno</a>
  &#8226;   <a href="#ui.base_window">ui.base_window</a>
+ &#8226;   <a href="#vehicle_manager">vehicle_manager</a>
 
   </div>
 
@@ -7896,12 +8279,55 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="updater"></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/updater.py" type="text/plain"><tt>updater</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PySide6.QtCore">PySide6.QtCore</a>
+ &#8226;   <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
+ &#8226;   <a href="#json">json</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="urllib"></a>
   <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/urllib/__init__.py" type="text/plain"><tt>urllib</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
 imported by:
     <a href="#email._header_value_parser">email._header_value_parser</a>
+ &#8226;   <a href="#urllib.error">urllib.error</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#urllib.response">urllib.response</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="urllib.error"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/urllib/error.py" type="text/plain"><tt>urllib.error</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#io">io</a>
+ &#8226;   <a href="#urllib">urllib</a>
+ &#8226;   <a href="#urllib.response">urllib.response</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.request">urllib.request</a>
 
   </div>
 
@@ -7926,7 +8352,97 @@ imports:
   <div class="import">
 imported by:
     <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#nturl2path">nturl2path</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="urllib.request"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/urllib/request.py" type="text/plain"><tt>urllib.request</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_scproxy">_scproxy</a>
+ &#8226;   <a href="#base64">base64</a>
+ &#8226;   <a href="#bisect">bisect</a>
+ &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#email">email</a>
+ &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#fnmatch">fnmatch</a>
+ &#8226;   <a href="#ftplib">ftplib</a>
+ &#8226;   <a href="#getpass">getpass</a>
+ &#8226;   <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#ipaddress">ipaddress</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#nturl2path">nturl2path</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#string">string</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#urllib">urllib</a>
+ &#8226;   <a href="#urllib.error">urllib.error</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.response">urllib.response</a>
+ &#8226;   <a href="#warnings">warnings</a>
+ &#8226;   <a href="#winreg">winreg</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#updater">updater</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="urllib.response"></a>
+  <a target="code" href="///C:/Users/alizmax/AppData/Local/Programs/Python/Python313/Lib/urllib/response.py" type="text/plain"><tt>urllib.response</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#urllib">urllib</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#urllib.error">urllib.error</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="vehicle_manager"></a>
+  <a target="code" href="///C:/Users/alizmax/Desktop/gfgg/ASLAN-TUNER_py/vehicle_manager.py" type="text/plain"><tt>vehicle_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PySide6.QtCore">PySide6.QtCore</a>
+ &#8226;   <a href="#PySide6.QtGui">PySide6.QtGui</a>
+ &#8226;   <a href="#PySide6.QtWidgets">PySide6.QtWidgets</a>
+ &#8226;   <a href="#json">json</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#ui.topbar">ui.topbar</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
 
   </div>
 
@@ -7960,9 +8476,12 @@ imported by:
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#getpass">getpass</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#hmac">hmac</a>
+ &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.abc">importlib.abc</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.metadata._adapters">importlib.metadata._adapters</a>
@@ -7980,6 +8499,7 @@ imported by:
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
+ &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
@@ -7987,6 +8507,7 @@ imported by:
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -8028,6 +8549,8 @@ imported by:
   <tt>winreg</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#importlib._bootstrap_external">importlib._bootstrap_external</a>
+ &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
 

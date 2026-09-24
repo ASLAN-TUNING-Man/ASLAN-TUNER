@@ -1184,6 +1184,7 @@ class EngineDynoSimulator(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.last_result = None
 
         self.setWindowTitle(
             "ASLAN ENGINE DYNO SIMULATOR"
@@ -1865,6 +1866,7 @@ class EngineDynoSimulator(QDialog):
                 data
             )
 
+            self.last_result = result
             self.show_results(
                 result
             )

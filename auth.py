@@ -7,6 +7,15 @@ def _derive(password, salt):
     return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 180_000).hex()
 
 
+def is_session_active(settings):
+    return bool(settings.value("account/session_active", False, type=bool)) and bool(settings.value("account/username", ""))
+
+
+def logout(settings):
+    settings.setValue("account/session_active", False)
+    settings.sync()
+
+
 class AuthDialog(QDialog):
     """Local account gate. Passwords are stored as salted PBKDF2 hashes."""
     def __init__(self, settings, parent=None):
@@ -104,6 +113,7 @@ class AuthDialog(QDialog):
             self.settings.setValue("account/username", username)
             self.settings.setValue("account/salt", salt.hex())
             self.settings.setValue("account/hash", _derive(password, salt))
+            self.settings.setValue("account/session_active", True)
             self.settings.sync()
             QMessageBox.information(self, "Account", "Account created. You are now signed in.")
             self.logged_in = True
@@ -122,5 +132,7 @@ class AuthDialog(QDialog):
         if username != saved_user or not salt or _derive(password, salt) != saved_hash:
             QMessageBox.warning(self, "Account", "Invalid username or password.")
             return
+        self.settings.setValue("account/session_active", True)
+        self.settings.sync()
         self.logged_in = True
         self.accept()

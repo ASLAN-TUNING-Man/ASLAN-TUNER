@@ -544,16 +544,20 @@ class StoichCalculator(QDialog):
         # MAIN LAYOUT
         # ----------------------------------------------------
 
-        layout = QVBoxLayout(self)
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
 
-        layout.setContentsMargins(
-            24,
-            20,
-            24,
-            20
-        )
-
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        content = QWidget()
+        layout = QVBoxLayout(content)
+        layout.setContentsMargins(24, 20, 24, 20)
         layout.setSpacing(12)
+        scroll.setWidget(content)
+        root.addWidget(scroll, 1)
 
         # ----------------------------------------------------
         # HEADER
